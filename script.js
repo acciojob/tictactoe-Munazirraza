@@ -1,70 +1,61 @@
-let player1 = document.getElementById('player1');
-let player2 = document.getElementById('player2');
-// console.log(player2)
-let boxList = document.querySelectorAll('.box');
-let turn = 'x';
-let isGameOver = false;
-let form = document.querySelector('form');
+// Wait for the DOM to load
+document.addEventListener("DOMContentLoaded", () => {
+  // Get the required elements from the DOM
+  const submitButton = document.getElementById("submit");
+  const message = document.querySelector(".message");
+  const cells = document.querySelectorAll(".cell");
 
+  // Add event listener to the submit button
+  submitButton.addEventListener("click", startGame);
 
-//Function to change the turn
-const changeTurn = function () {
-  return turn === 'x' ? 'o' : 'x';
-};
+  // Function to handle game start
+  function startGame() {
+    // Get the player names from the input fields
+    const player1Name = document.getElementById("player-1").value;
+    const player2Name = document.getElementById("player-2").value;
 
-//Function to check for a win
-const checkWin = function () {
-  let boxTextList = document.querySelectorAll('.text');
-  let win = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  win.forEach((element) => {
-    if (
-      boxTextList[element[0]].innerText !== '' &&
-      boxTextList[element[0]].innerText === boxTextList[element[1]].innerText &&
-      boxTextList[element[1]].innerText === boxTextList[element[2]].innerText
-    ) {
-      isGameOver = true;
-      boxTextList[element[0]].parentNode.style.backgroundColor = 'purple';
-      boxTextList[element[1]].parentNode.style.backgroundColor = 'purple';
-      boxTextList[element[2]].parentNode.style.backgroundColor = 'purple';
+    // Hide the player input and show the game board
+    document.getElementById("player-input").style.display = "none";
+    document.getElementById("game-board").style.display = "block";
+
+    // Initialize the game state and active player
+    let gameActive = true;
+    let activePlayer = 1;
+    message.textContent = `${player1Name}, you're up!`;
+
+    // Add event listener to each cell
+    cells.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        // Check if the cell is empty and the game is active
+        if (cell.textContent === "" && gameActive) {
+          // Assign the current player's symbol to the cell
+          cell.textContent = activePlayer === 1 ? "X" : "O";
+          // Check for a win condition
+          if (checkWin()) {
+            message.textContent = `${activePlayer === 1 ? player1Name : player2Name}, congratulations, you won!`;
+            gameActive = false;
+          } else if (checkDraw()) {
+            message.textContent = "It's a draw!";
+            gameActive = false;
+          } else {
+            // Switch the active player
+            activePlayer = activePlayer === 1 ? 2 : 1;
+            message.textContent = `${activePlayer === 1 ? player1Name : player2Name}, you're up!`;
+          }
+        }
+      });
+    });
+
+    // Function to check for a win condition
+    function checkWin() {
+      // Add your win condition logic here
+      return false;
     }
-  });
-};
 
-//Main Logic
-boxList.forEach((element) => {
-  element.addEventListener('click', function () {
-    let boxText = this.querySelector('.text');
-    if (boxText.innerText === '') {
-      boxText.innerText = turn;
-      turn = changeTurn();
-      checkWin();
-      if (isGameOver) {
-        const winner = turn === 'o' ? 'player1' : 'player2';
-        document.querySelector(
-          '.message'
-        ).innerText = `${winner}, congratulations you won!`;
-      } else {
-        const player = turn === 'x' ? 'player1' : 'player2';
-        document.querySelector('.message').innerText = `${player}, you\'re up`;
-      }
+    // Function to check for a draw condition
+    function checkDraw() {
+      // Add your draw condition logic here
+      return false;
     }
-  });
-});
-
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  form.style.display = 'none';
-  document.querySelector('.game-container').style.display = 'flex';
-  let msg = document.querySelector('.message')
-  msg.innerText = `${player1.value}, you're up`
-  console.log(player2.value)
+  }
 });
