@@ -48,14 +48,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to check for a win condition
     function checkWin() {
-      // Add your win condition logic here
-      return false;
+      // Define the winning combinations
+      const winCombinations = [
+        [1, 2, 3], [4, 5, 6], [7, 8, 9], // Rows
+        [1, 4, 7], [2, 5, 8], [3, 6, 9], // Columns
+        [1, 5, 9], [3, 5, 7] // Diagonals
+      ];
+
+      // Check if any winning combination is present on the board
+      for (const combination of winCombinations) {
+        const [a, b, c] = combination;
+        if (cells[a - 1].textContent !== "" &&
+            cells[a - 1].textContent === cells[b - 1].textContent &&
+            cells[a - 1].textContent === cells[c - 1].textContent) {
+          return true; // Winning combination found
+        }
+      }
+
+      return false; // No winning combination
     }
 
     // Function to check for a draw condition
     function checkDraw() {
-      // Add your draw condition logic here
-      return false;
+      for (const cell of cells) {
+        if (cell.textContent === "") {
+          return false; // Empty cell found, game still in progress
+        }
+      }
+      return true; // All cells filled, game is a draw
     }
   }
 });
